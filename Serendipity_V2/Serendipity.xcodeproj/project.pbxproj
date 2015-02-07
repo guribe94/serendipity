@@ -1,0 +1,736 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		ED06039F1A860FF00070F70C /* ItemInterfaceController.m in Sources */ = {isa = PBXBuildFile; fileRef = ED06039E1A860FF00070F70C /* ItemInterfaceController.m */; };
+		ED0603A11A861AF70070F70C /* NotificationCenter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ED0603A01A861AF70070F70C /* NotificationCenter.framework */; };
+		EDEFF3FC1A85F1B50068B044 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = EDEFF3FB1A85F1B50068B044 /* main.m */; };
+		EDEFF3FF1A85F1B50068B044 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = EDEFF3FE1A85F1B50068B044 /* AppDelegate.m */; };
+		EDEFF4021A85F1B50068B044 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EDEFF4011A85F1B50068B044 /* ViewController.m */; };
+		EDEFF4051A85F1B50068B044 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EDEFF4031A85F1B50068B044 /* Main.storyboard */; };
+		EDEFF4071A85F1B50068B044 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EDEFF4061A85F1B50068B044 /* Images.xcassets */; };
+		EDEFF40A1A85F1B50068B044 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = EDEFF4081A85F1B50068B044 /* LaunchScreen.xib */; };
+		EDEFF4161A85F1B50068B044 /* SerendipityTests.m in Sources */ = {isa = PBXBuildFile; fileRef = EDEFF4151A85F1B50068B044 /* SerendipityTests.m */; };
+		EDEFF4291A85F2050068B044 /* InterfaceController.m in Sources */ = {isa = PBXBuildFile; fileRef = EDEFF4281A85F2050068B044 /* InterfaceController.m */; };
+		EDEFF42B1A85F2060068B044 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EDEFF42A1A85F2060068B044 /* Images.xcassets */; };
+		EDEFF42F1A85F2060068B044 /* Serendipity WatchKit App.app in Resources */ = {isa = PBXBuildFile; fileRef = EDEFF42E1A85F2060068B044 /* Serendipity WatchKit App.app */; };
+		EDEFF4371A85F2060068B044 /* Interface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EDEFF4351A85F2060068B044 /* Interface.storyboard */; };
+		EDEFF4391A85F2060068B044 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EDEFF4381A85F2060068B044 /* Images.xcassets */; };
+		EDEFF43C1A85F2060068B044 /* Serendipity WatchKit Extension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = EDEFF4231A85F2050068B044 /* Serendipity WatchKit Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		EDEFF4481A85F5390068B044 /* MMWormhole.m in Sources */ = {isa = PBXBuildFile; fileRef = EDEFF4471A85F5390068B044 /* MMWormhole.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		EDEFF4101A85F1B50068B044 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = EDEFF3EE1A85F1B40068B044 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = EDEFF3F51A85F1B50068B044;
+			remoteInfo = Serendipity;
+		};
+		EDEFF4301A85F2060068B044 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = EDEFF3EE1A85F1B40068B044 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = EDEFF42D1A85F2060068B044;
+			remoteInfo = "Serendipity WatchKit App";
+		};
+		EDEFF43A1A85F2060068B044 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = EDEFF3EE1A85F1B40068B044 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = EDEFF4221A85F2050068B044;
+			remoteInfo = "Serendipity WatchKit Extension";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		EDEFF4431A85F2060068B044 /* Embed App Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				EDEFF43C1A85F2060068B044 /* Serendipity WatchKit Extension.appex in Embed App Extensions */,
+			);
+			name = "Embed App Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		ED06039D1A860FF00070F70C /* ItemInterfaceController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ItemInterfaceController.h; sourceTree = "<group>"; };
+		ED06039E1A860FF00070F70C /* ItemInterfaceController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ItemInterfaceController.m; sourceTree = "<group>"; };
+		ED0603A01A861AF70070F70C /* NotificationCenter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NotificationCenter.framework; path = System/Library/Frameworks/NotificationCenter.framework; sourceTree = SDKROOT; };
+		EDEFF3F61A85F1B50068B044 /* Serendipity.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Serendipity.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		EDEFF3FA1A85F1B50068B044 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		EDEFF3FB1A85F1B50068B044 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		EDEFF3FD1A85F1B50068B044 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		EDEFF3FE1A85F1B50068B044 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		EDEFF4001A85F1B50068B044 /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
+		EDEFF4011A85F1B50068B044 /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
+		EDEFF4041A85F1B50068B044 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		EDEFF4061A85F1B50068B044 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		EDEFF4091A85F1B50068B044 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
+		EDEFF40F1A85F1B50068B044 /* SerendipityTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SerendipityTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		EDEFF4141A85F1B50068B044 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		EDEFF4151A85F1B50068B044 /* SerendipityTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SerendipityTests.m; sourceTree = "<group>"; };
+		EDEFF4231A85F2050068B044 /* Serendipity WatchKit Extension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "Serendipity WatchKit Extension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
+		EDEFF4261A85F2050068B044 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		EDEFF4271A85F2050068B044 /* InterfaceController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = InterfaceController.h; sourceTree = "<group>"; };
+		EDEFF4281A85F2050068B044 /* InterfaceController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = InterfaceController.m; sourceTree = "<group>"; };
+		EDEFF42A1A85F2060068B044 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		EDEFF42E1A85F2060068B044 /* Serendipity WatchKit App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Serendipity WatchKit App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		EDEFF4341A85F2060068B044 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		EDEFF4361A85F2060068B044 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Interface.storyboard; sourceTree = "<group>"; };
+		EDEFF4381A85F2060068B044 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		EDEFF4441A85F4920068B044 /* Serendipity.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = Serendipity.entitlements; sourceTree = "<group>"; };
+		EDEFF4461A85F5390068B044 /* MMWormhole.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MMWormhole.h; sourceTree = "<group>"; };
+		EDEFF4471A85F5390068B044 /* MMWormhole.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MMWormhole.m; sourceTree = "<group>"; };
+		EDEFF4491A85FDF80068B044 /* Serendipity WatchKit Extension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "Serendipity WatchKit Extension.entitlements"; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		EDEFF3F31A85F1B50068B044 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				ED0603A11A861AF70070F70C /* NotificationCenter.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		EDEFF40C1A85F1B50068B044 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		EDEFF4201A85F2050068B044 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		EDEFF3ED1A85F1B40068B044 = {
+			isa = PBXGroup;
+			children = (
+				ED0603A01A861AF70070F70C /* NotificationCenter.framework */,
+				EDEFF3F81A85F1B50068B044 /* Serendipity */,
+				EDEFF4121A85F1B50068B044 /* SerendipityTests */,
+				EDEFF4241A85F2050068B044 /* Serendipity WatchKit Extension */,
+				EDEFF4321A85F2060068B044 /* Serendipity WatchKit App */,
+				EDEFF3F71A85F1B50068B044 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		EDEFF3F71A85F1B50068B044 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				EDEFF3F61A85F1B50068B044 /* Serendipity.app */,
+				EDEFF40F1A85F1B50068B044 /* SerendipityTests.xctest */,
+				EDEFF4231A85F2050068B044 /* Serendipity WatchKit Extension.appex */,
+				EDEFF42E1A85F2060068B044 /* Serendipity WatchKit App.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		EDEFF3F81A85F1B50068B044 /* Serendipity */ = {
+			isa = PBXGroup;
+			children = (
+				EDEFF4441A85F4920068B044 /* Serendipity.entitlements */,
+				EDEFF3FD1A85F1B50068B044 /* AppDelegate.h */,
+				EDEFF3FE1A85F1B50068B044 /* AppDelegate.m */,
+				EDEFF4001A85F1B50068B044 /* ViewController.h */,
+				EDEFF4011A85F1B50068B044 /* ViewController.m */,
+				EDEFF4031A85F1B50068B044 /* Main.storyboard */,
+				EDEFF4061A85F1B50068B044 /* Images.xcassets */,
+				EDEFF4081A85F1B50068B044 /* LaunchScreen.xib */,
+				EDEFF3F91A85F1B50068B044 /* Supporting Files */,
+			);
+			path = Serendipity;
+			sourceTree = "<group>";
+		};
+		EDEFF3F91A85F1B50068B044 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				EDEFF3FA1A85F1B50068B044 /* Info.plist */,
+				EDEFF3FB1A85F1B50068B044 /* main.m */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		EDEFF4121A85F1B50068B044 /* SerendipityTests */ = {
+			isa = PBXGroup;
+			children = (
+				EDEFF4151A85F1B50068B044 /* SerendipityTests.m */,
+				EDEFF4131A85F1B50068B044 /* Supporting Files */,
+			);
+			path = SerendipityTests;
+			sourceTree = "<group>";
+		};
+		EDEFF4131A85F1B50068B044 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				EDEFF4141A85F1B50068B044 /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		EDEFF4241A85F2050068B044 /* Serendipity WatchKit Extension */ = {
+			isa = PBXGroup;
+			children = (
+				EDEFF4451A85F5390068B044 /* Source */,
+				EDEFF4491A85FDF80068B044 /* Serendipity WatchKit Extension.entitlements */,
+				ED06039D1A860FF00070F70C /* ItemInterfaceController.h */,
+				ED06039E1A860FF00070F70C /* ItemInterfaceController.m */,
+				EDEFF4271A85F2050068B044 /* InterfaceController.h */,
+				EDEFF4281A85F2050068B044 /* InterfaceController.m */,
+				EDEFF42A1A85F2060068B044 /* Images.xcassets */,
+				EDEFF4251A85F2050068B044 /* Supporting Files */,
+			);
+			path = "Serendipity WatchKit Extension";
+			sourceTree = "<group>";
+		};
+		EDEFF4251A85F2050068B044 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				EDEFF4261A85F2050068B044 /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		EDEFF4321A85F2060068B044 /* Serendipity WatchKit App */ = {
+			isa = PBXGroup;
+			children = (
+				EDEFF4351A85F2060068B044 /* Interface.storyboard */,
+				EDEFF4381A85F2060068B044 /* Images.xcassets */,
+				EDEFF4331A85F2060068B044 /* Supporting Files */,
+			);
+			path = "Serendipity WatchKit App";
+			sourceTree = "<group>";
+		};
+		EDEFF4331A85F2060068B044 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				EDEFF4341A85F2060068B044 /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		EDEFF4451A85F5390068B044 /* Source */ = {
+			isa = PBXGroup;
+			children = (
+				EDEFF4461A85F5390068B044 /* MMWormhole.h */,
+				EDEFF4471A85F5390068B044 /* MMWormhole.m */,
+			);
+			name = Source;
+			path = "../../../../Downloads/MMWormhole-master/Source";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		EDEFF3F51A85F1B50068B044 /* Serendipity */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = EDEFF4191A85F1B60068B044 /* Build configuration list for PBXNativeTarget "Serendipity" */;
+			buildPhases = (
+				EDEFF3F21A85F1B50068B044 /* Sources */,
+				EDEFF3F31A85F1B50068B044 /* Frameworks */,
+				EDEFF3F41A85F1B50068B044 /* Resources */,
+				EDEFF4431A85F2060068B044 /* Embed App Extensions */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				EDEFF43B1A85F2060068B044 /* PBXTargetDependency */,
+			);
+			name = Serendipity;
+			productName = Serendipity;
+			productReference = EDEFF3F61A85F1B50068B044 /* Serendipity.app */;
+			productType = "com.apple.product-type.application";
+		};
+		EDEFF40E1A85F1B50068B044 /* SerendipityTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = EDEFF41C1A85F1B60068B044 /* Build configuration list for PBXNativeTarget "SerendipityTests" */;
+			buildPhases = (
+				EDEFF40B1A85F1B50068B044 /* Sources */,
+				EDEFF40C1A85F1B50068B044 /* Frameworks */,
+				EDEFF40D1A85F1B50068B044 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				EDEFF4111A85F1B50068B044 /* PBXTargetDependency */,
+			);
+			name = SerendipityTests;
+			productName = SerendipityTests;
+			productReference = EDEFF40F1A85F1B50068B044 /* SerendipityTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		EDEFF4221A85F2050068B044 /* Serendipity WatchKit Extension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = EDEFF4401A85F2060068B044 /* Build configuration list for PBXNativeTarget "Serendipity WatchKit Extension" */;
+			buildPhases = (
+				EDEFF41F1A85F2050068B044 /* Sources */,
+				EDEFF4201A85F2050068B044 /* Frameworks */,
+				EDEFF4211A85F2050068B044 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				EDEFF4311A85F2060068B044 /* PBXTargetDependency */,
+			);
+			name = "Serendipity WatchKit Extension";
+			productName = "Serendipity WatchKit Extension";
+			productReference = EDEFF4231A85F2050068B044 /* Serendipity WatchKit Extension.appex */;
+			productType = "com.apple.product-type.watchkit-extension";
+		};
+		EDEFF42D1A85F2060068B044 /* Serendipity WatchKit App */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = EDEFF43D1A85F2060068B044 /* Build configuration list for PBXNativeTarget "Serendipity WatchKit App" */;
+			buildPhases = (
+				EDEFF42C1A85F2060068B044 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Serendipity WatchKit App";
+			productName = "Serendipity WatchKit App";
+			productReference = EDEFF42E1A85F2060068B044 /* Serendipity WatchKit App.app */;
+			productType = "com.apple.product-type.application.watchapp";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		EDEFF3EE1A85F1B40068B044 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0620;
+				ORGANIZATIONNAME = "Rahul Kapur";
+				TargetAttributes = {
+					EDEFF3F51A85F1B50068B044 = {
+						CreatedOnToolsVersion = 6.2;
+						DevelopmentTeam = 848JC7C22W;
+						SystemCapabilities = {
+							com.apple.ApplicationGroups.iOS = {
+								enabled = 1;
+							};
+						};
+					};
+					EDEFF40E1A85F1B50068B044 = {
+						CreatedOnToolsVersion = 6.2;
+						TestTargetID = EDEFF3F51A85F1B50068B044;
+					};
+					EDEFF4221A85F2050068B044 = {
+						CreatedOnToolsVersion = 6.2;
+						DevelopmentTeam = 848JC7C22W;
+						SystemCapabilities = {
+							com.apple.ApplicationGroups.iOS = {
+								enabled = 1;
+							};
+						};
+					};
+					EDEFF42D1A85F2060068B044 = {
+						CreatedOnToolsVersion = 6.2;
+					};
+				};
+			};
+			buildConfigurationList = EDEFF3F11A85F1B50068B044 /* Build configuration list for PBXProject "Serendipity" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = EDEFF3ED1A85F1B40068B044;
+			productRefGroup = EDEFF3F71A85F1B50068B044 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				EDEFF3F51A85F1B50068B044 /* Serendipity */,
+				EDEFF40E1A85F1B50068B044 /* SerendipityTests */,
+				EDEFF4221A85F2050068B044 /* Serendipity WatchKit Extension */,
+				EDEFF42D1A85F2060068B044 /* Serendipity WatchKit App */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		EDEFF3F41A85F1B50068B044 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				EDEFF4051A85F1B50068B044 /* Main.storyboard in Resources */,
+				EDEFF40A1A85F1B50068B044 /* LaunchScreen.xib in Resources */,
+				EDEFF4071A85F1B50068B044 /* Images.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		EDEFF40D1A85F1B50068B044 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		EDEFF4211A85F2050068B044 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				EDEFF42B1A85F2060068B044 /* Images.xcassets in Resources */,
+				EDEFF42F1A85F2060068B044 /* Serendipity WatchKit App.app in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		EDEFF42C1A85F2060068B044 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				EDEFF4371A85F2060068B044 /* Interface.storyboard in Resources */,
+				EDEFF4391A85F2060068B044 /* Images.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		EDEFF3F21A85F1B50068B044 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				EDEFF4021A85F1B50068B044 /* ViewController.m in Sources */,
+				EDEFF3FF1A85F1B50068B044 /* AppDelegate.m in Sources */,
+				EDEFF4481A85F5390068B044 /* MMWormhole.m in Sources */,
+				EDEFF3FC1A85F1B50068B044 /* main.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		EDEFF40B1A85F1B50068B044 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				EDEFF4161A85F1B50068B044 /* SerendipityTests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		EDEFF41F1A85F2050068B044 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				ED06039F1A860FF00070F70C /* ItemInterfaceController.m in Sources */,
+				EDEFF4291A85F2050068B044 /* InterfaceController.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		EDEFF4111A85F1B50068B044 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = EDEFF3F51A85F1B50068B044 /* Serendipity */;
+			targetProxy = EDEFF4101A85F1B50068B044 /* PBXContainerItemProxy */;
+		};
+		EDEFF4311A85F2060068B044 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = EDEFF42D1A85F2060068B044 /* Serendipity WatchKit App */;
+			targetProxy = EDEFF4301A85F2060068B044 /* PBXContainerItemProxy */;
+		};
+		EDEFF43B1A85F2060068B044 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = EDEFF4221A85F2050068B044 /* Serendipity WatchKit Extension */;
+			targetProxy = EDEFF43A1A85F2060068B044 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		EDEFF4031A85F1B50068B044 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				EDEFF4041A85F1B50068B044 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		EDEFF4081A85F1B50068B044 /* LaunchScreen.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				EDEFF4091A85F1B50068B044 /* Base */,
+			);
+			name = LaunchScreen.xib;
+			sourceTree = "<group>";
+		};
+		EDEFF4351A85F2060068B044 /* Interface.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				EDEFF4361A85F2060068B044 /* Base */,
+			);
+			name = Interface.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		EDEFF4171A85F1B50068B044 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.2;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		EDEFF4181A85F1B60068B044 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.2;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		EDEFF41A1A85F1B60068B044 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Serendipity/Serendipity.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				INFOPLIST_FILE = Serendipity/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
+			};
+			name = Debug;
+		};
+		EDEFF41B1A85F1B60068B044 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Serendipity/Serendipity.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				INFOPLIST_FILE = Serendipity/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
+			};
+			name = Release;
+		};
+		EDEFF41D1A85F1B60068B044 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+				);
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = SerendipityTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Serendipity.app/Serendipity";
+			};
+			name = Debug;
+		};
+		EDEFF41E1A85F1B60068B044 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = SerendipityTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Serendipity.app/Serendipity";
+			};
+			name = Release;
+		};
+		EDEFF43E1A85F2060068B044 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				IBSC_MODULE = Serendipity_WatchKit_Extension;
+				INFOPLIST_FILE = "Serendipity WatchKit App/Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = 4;
+				"TARGETED_DEVICE_FAMILY[sdk=iphonesimulator*]" = "1,4";
+			};
+			name = Debug;
+		};
+		EDEFF43F1A85F2060068B044 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				IBSC_MODULE = Serendipity_WatchKit_Extension;
+				INFOPLIST_FILE = "Serendipity WatchKit App/Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = 4;
+				"TARGETED_DEVICE_FAMILY[sdk=iphonesimulator*]" = "1,4";
+			};
+			name = Release;
+		};
+		EDEFF4411A85F2060068B044 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = "Serendipity WatchKit Extension/Serendipity WatchKit Extension.entitlements";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = "Serendipity WatchKit Extension/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				PRODUCT_NAME = "${TARGET_NAME}";
+				PROVISIONING_PROFILE = "";
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		EDEFF4421A85F2060068B044 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = "Serendipity WatchKit Extension/Serendipity WatchKit Extension.entitlements";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				INFOPLIST_FILE = "Serendipity WatchKit Extension/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				PRODUCT_NAME = "${TARGET_NAME}";
+				PROVISIONING_PROFILE = "";
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		EDEFF3F11A85F1B50068B044 /* Build configuration list for PBXProject "Serendipity" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				EDEFF4171A85F1B50068B044 /* Debug */,
+				EDEFF4181A85F1B60068B044 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		EDEFF4191A85F1B60068B044 /* Build configuration list for PBXNativeTarget "Serendipity" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				EDEFF41A1A85F1B60068B044 /* Debug */,
+				EDEFF41B1A85F1B60068B044 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		EDEFF41C1A85F1B60068B044 /* Build configuration list for PBXNativeTarget "SerendipityTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				EDEFF41D1A85F1B60068B044 /* Debug */,
+				EDEFF41E1A85F1B60068B044 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		EDEFF43D1A85F2060068B044 /* Build configuration list for PBXNativeTarget "Serendipity WatchKit App" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				EDEFF43E1A85F2060068B044 /* Debug */,
+				EDEFF43F1A85F2060068B044 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		EDEFF4401A85F2060068B044 /* Build configuration list for PBXNativeTarget "Serendipity WatchKit Extension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				EDEFF4411A85F2060068B044 /* Debug */,
+				EDEFF4421A85F2060068B044 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = EDEFF3EE1A85F1B40068B044 /* Project object */;
+}
