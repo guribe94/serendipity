@@ -1,15 +1,12 @@
 # -*- coding: utf-8 -*-
 """
-Yelp API v2.0 code sample.
-This program demonstrates the capability of the Yelp API version 2.0
+Yelp API v2.0 wrapper for serendipity.
+
+This program demonstrates uses the Yelp API version 2.0
 by using the Search API to query for businesses by a search term and location,
 and the Business API to query additional information about the top result
-from the search query.
-Please refer to http://www.yelp.com/developers/documentation for the API documentation.
-This program requires the Python oauth2 library, which you can install via:
-`pip install -r requirements.txt`.
-Sample usage of the program:
-`python sample.py --term="bars" --location="San Francisco, CA"`
+from the search query to return as JSON.
+
 """
 import argparse
 import json
@@ -20,24 +17,21 @@ import urllib2
 
 import oauth2
 
-
 API_HOST = 'api.yelp.com'
 DEFAULT_TERM = ''#'dinner'
-DEFAULT_LOCATION = 'New York, NY'
+DEFAULT_LOCATION = ''
 DEFAULT_LATITUDE = 40.805741
 DEFAULT_LONGITUDE = -73.964996
 DEFAULT_LL = [DEFAULT_LATITUDE, DEFAULT_LONGITUDE]
-SEARCH_LIMIT = 5
-RADIUS_LIMIT = 1610
+
 SEARCH_PATH = '/v2/search/'
 BUSINESS_PATH = '/v2/business/'
 
-# OAuth credential placeholders that must be filled in by users.
+    # OAuth credential placeholders that must be filled in by users.
 CONSUMER_KEY = 'r_jbHVPhxl6YXmTI7XB3vg'
 CONSUMER_SECRET = 'E6MatPc81kIc_y-icB7pFUjEfgg'
 TOKEN = 'l0jXKeNMzYsLLxN7iulBIzhGtUa5ejCZ'
 TOKEN_SECRET = 'jFlyShJGUllmnpvkssEe84dmC2g'
-
 
 def request(host, path, url_params=None):
     """Prepares OAuth authentication and sends the request to the API.
@@ -87,6 +81,9 @@ def search(term, location):
         dict: The JSON response from the request.
     """
     
+    SEARCH_LIMIT = 5
+    RADIUS_LIMIT = 1610
+
     url_params = {
         'term': term.replace(' ', '+'),
         'location': location.replace(' ', '+'),
@@ -136,12 +133,6 @@ def query_api(term, location):
     for y in range(0, len(deleteList)):
         del businesses[y]
 
-    #print deleteList
-            
-
-    #print type(response)
-    #print response
-    #print type(businesses)
     print 'yeahhh'
     for z in range(0, len(businesses)):
         print 'Result ' + str(z + 1)
@@ -153,37 +144,11 @@ def query_api(term, location):
     #print json1
     return json1
 
-    # if not businesses:
-    #     print u'No businesses for {0} in {1} found.'.format(term, location)
-    #     return
-
-    # business_id = businesses[0]['id']
-
-    # print u'{0} businesses found, querying business info for the top result "{1}" ...'.format(
-    #     len(businesses),
-    #     business_id
-    # )
-
-    # response = get_business(business_id)
-
-    # print u'Result for business "{0}" found:'.format(business_id)
-    # pprint.pprint(response, indent=2)
-
 
 def get(address):
-    # parser = argparse.ArgumentParser()
-
-    # parser.add_argument('-q', '--term', dest='term', default=DEFAULT_TERM, type=str, help='Search term (default: %(default)s)')
-    # parser.add_argument('-l', '--location', dest='location', default=DEFAULT_LOCATION, type=str, help='Search location (default: %(default)s)')
-
-    # input_values = parser.parse_args()
-    DEFAULT_LOCATION = address
 
     try:
-        return query_api(input_values.term, input_values.location)
+        # return query_api(input_values.term, input_values.location)
+        return query_api('', address)
     except urllib2.HTTPError as error:
         sys.exit('Encountered HTTP error {0}. Abort program.'.format(error.code))
-
-
-if __name__ == '__main__':
-    main()

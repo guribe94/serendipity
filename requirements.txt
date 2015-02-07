@@ -1,4 +1,6 @@
 Django==1.7.4
-python-google-places==0.12.1
-oauth2==1.0
+geopy==1.8.1
 httplib2==0.9
+oauth2==1.0.0
+python-google-places==0.12.1
+wsgiref==0.1.2
