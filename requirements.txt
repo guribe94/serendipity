@@ -1,0 +1,4 @@
+Django==1.7.4
+python-google-places==0.12.1
+oauth2==1.0
+httplib2==0.9

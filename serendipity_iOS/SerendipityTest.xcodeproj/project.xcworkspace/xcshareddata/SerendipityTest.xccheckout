@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>937A6B9E-C6AC-4697-8639-1472BA706F52</string>
+	<key>IDESourceControlProjectName</key>
+	<string>SerendipityTest</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>AA53CD6864DC9D9F8883F330F09B5ACB1743D9F0</key>
+		<string>https://github.com/guribe94/serendipity.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>serendipity_iOS/SerendipityTest.xcodeproj</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>AA53CD6864DC9D9F8883F330F09B5ACB1743D9F0</key>
+		<string>../../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>https://github.com/guribe94/serendipity.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>111</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>AA53CD6864DC9D9F8883F330F09B5ACB1743D9F0</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>AA53CD6864DC9D9F8883F330F09B5ACB1743D9F0</string>
+			<key>IDESourceControlWCCName</key>
+			<string>serendipity</string>
+		</dict>
+	</array>
+</dict>
+</plist>
