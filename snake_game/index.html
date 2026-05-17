@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Snake Arcade - Power-Ups Edition</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="game-shell">
+  <header class="hud">
+    <div class="hud-cell">
+      <span class="hud-label">SCORE</span>
+      <span id="score" class="hud-value">0</span>
+    </div>
+    <div class="hud-cell">
+      <span class="hud-label">HIGH</span>
+      <span id="highScore" class="hud-value">0</span>
+    </div>
+    <div class="hud-cell">
+      <span class="hud-label">LEVEL</span>
+      <span id="level" class="hud-value">1</span>
+    </div>
+    <div class="hud-cell">
+      <span class="hud-label">LENGTH</span>
+      <span id="length" class="hud-value">3</span>
+    </div>
+  </header>
+
+  <div class="stage">
+    <canvas id="board" width="600" height="600" aria-label="Snake game board"></canvas>
+
+    <div id="overlay" class="overlay show">
+      <div class="overlay-card">
+        <h1 class="title">SNAKE<span class="title-accent">ARCADE</span></h1>
+        <p class="tagline">Eat. Grow. Grab power-ups. Survive.</p>
+
+        <div class="legend">
+          <h2>Power-Ups</h2>
+          <ul class="legend-list">
+            <li><span class="chip chip-bolt">⚡</span><strong>Speed Boost</strong><em>Move faster for 6s</em></li>
+            <li><span class="chip chip-slow">⌛</span><strong>Slow Motion</strong><em>Move slower for 6s</em></li>
+            <li><span class="chip chip-star">★</span><strong>Double Points</strong><em>2x score for 8s</em></li>
+            <li><span class="chip chip-shield">🛡</span><strong>Invincibility</strong><em>Phase through walls/self 6s</em></li>
+            <li><span class="chip chip-shrink">✂</span><strong>Shrink</strong><em>Cut length in half</em></li>
+            <li><span class="chip chip-cherry">🍒</span><strong>Bonus Food</strong><em>Worth 5x normal food</em></li>
+          </ul>
+        </div>
+
+        <div class="controls">
+          <h2>Controls</h2>
+          <p><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> or <kbd>↑</kbd><kbd>↓</kbd><kbd>←</kbd><kbd>→</kbd> — Move</p>
+          <p><kbd>Space</kbd> — Pause / Resume</p>
+          <p><kbd>R</kbd> — Restart</p>
+        </div>
+
+        <button id="startBtn" class="primary-btn" type="button">PRESS START</button>
+      </div>
+    </div>
+
+    <div class="power-tray" id="powerTray" aria-live="polite"></div>
+  </div>
+
+  <footer class="instructions">
+    <p>Survive longer to level up. Higher levels mean faster snakes and rarer power-ups.</p>
+  </footer>
+</div>
+
+<script src="game.js"></script>
+</body>
+</html>
