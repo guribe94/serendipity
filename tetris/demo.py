@@ -1,73 +1,109 @@
-"""Run a short scripted game to verify the core gameplay subsystem end-to-end.
+"""Headless demo: render each game phase to a PNG for visual inspection.
 
-Usage:
-    python -m tetris.demo
+Run with::
+
+    SDL_VIDEODRIVER=dummy python3 -m tetris.demo [output_dir]
+
+This is the verification path used by Canvas delivery: it exercises the
+renderer end-to-end against an SDL surface without needing a display,
+saves snapshots, and exits 0 on success.
+
+A companion text-only demo of the core gameplay subsystem is available
+as :mod:`tetris.demo_core` (no pygame dependency).
 """
 
-from .board import Board
-from .game import Game
-from .tetromino import Tetromino
+from __future__ import annotations
+
+import os
+import sys
+from pathlib import Path
+from typing import Iterable
+
+# Headless default; callers can override before importing pygame.
+os.environ.setdefault("SDL_VIDEODRIVER", "dummy")
+
+import pygame
+
+from .pieces import spawn_piece
+from .renderer import Renderer
+from .state import (
+    BOARD_COLS,
+    HIDDEN_ROWS,
+    ActivePiece,
+    GamePhase,
+    RenderState,
+    Scoreboard,
+    TOTAL_ROWS,
+)
 
 
-def render(game: Game) -> str:
-    grid = [row[:] for row in game.board.grid]
-    if game.active is not None:
-        ghost = game.ghost_position()
-        if ghost is not None:
-            for r, c in ghost.blocks():
-                if game.board.is_inside(r, c) and grid[r][c] is None:
-                    grid[r][c] = "."
-        for r, c in game.active.blocks():
-            if game.board.is_inside(r, c):
-                grid[r][c] = game.active.kind
+def _sample_board() -> list[list[str | None]]:
+    board: list[list[str | None]] = [
+        [None] * BOARD_COLS for _ in range(TOTAL_ROWS)
+    ]
+    # Stack some debris in the bottom rows, leaving a deliberate gap so
+    # the renderer has interesting content.
+    debris = [
+        ("Z", "L", "L", "L", "T", "S", "S", "J", "J", None),
+        ("Z", "Z", "O", "O", "T", "T", "S", "S", "J", None),
+        ("L", "L", "O", "O", "T", "I", "I", "I", "I", None),
+    ]
+    for offset, row_kinds in enumerate(reversed(debris)):
+        target = TOTAL_ROWS - 1 - offset
+        for col, key in enumerate(row_kinds):
+            board[target][col] = key
+    return board
 
-    lines = []
-    for r in range(Board.HEIGHT):
-        prefix = "|" if r >= Board.BUFFER_HEIGHT else ":"
-        body = "".join(cell if cell else " " for cell in grid[r])
-        lines.append(f"{prefix}{body}{prefix}")
-    lines.append("+" + "-" * Board.WIDTH + "+")
-    lines.append(
-        f"score={game.scoring.score} level={game.scoring.level} "
-        f"lines={game.scoring.lines} state={game.state.value}"
+
+def _active_and_ghost() -> tuple[ActivePiece, ActivePiece]:
+    active = spawn_piece("T").shifted(0, 6)  # mid-board
+    # Ghost: same shape projected down to just above the debris stack.
+    ghost = active.shifted(0, 10)
+    return active, ghost
+
+
+def render_phase(renderer: Renderer, phase: GamePhase) -> pygame.Surface:
+    state = RenderState(
+        board=_sample_board(),
+        scoreboard=Scoreboard(score=12_840, level=4, lines=27),
+        next_pieces=[spawn_piece(k) for k in ("I", "O", "T", "S", "Z")],
+        held_piece=spawn_piece("J"),
+        phase=phase,
     )
-    lines.append("next: " + " ".join(game.next_pieces(5)))
-    if game.held:
-        lines.append(f"held: {game.held}")
-    return "\n".join(lines)
+    active, ghost = _active_and_ghost()
+    state.active_piece = active
+    state.ghost_piece = ghost
+    if phase == GamePhase.PLAYING:
+        state.message = "TETRIS!"
+    surface = renderer.create_surface()
+    renderer.draw(surface, state)
+    return surface
 
 
-def main() -> None:
-    game = Game(seed=7)
-    game.start()
-    print("Initial spawn:", game.active.kind)
-    print(render(game))
-    print()
+def main(argv: Iterable[str] = sys.argv[1:]) -> int:
+    args = list(argv)
+    out_dir = Path(args[0]) if args else Path("/tmp/tetris_snapshots")
+    out_dir.mkdir(parents=True, exist_ok=True)
 
-    # Drop the first five pieces straight down with hard drops.
-    for _ in range(5):
-        game.hard_drop()
-    print("After five hard drops:")
-    print(render(game))
-    print()
-
-    # Engineer a tetris: prefill the bottom four rows except column 0 and
-    # drop a vertical I-piece into the slot. Rotation-1 I has cells at col
-    # offset 2, so origin col=-2 places those cells in absolute column 0.
-    for r in range(Board.HEIGHT - 4, Board.HEIGHT):
-        for c in range(1, Board.WIDTH):
-            game.board.grid[r][c] = "X"
-    game.active = Tetromino(kind="I", row=0, col=-2, rotation=1)
-    score_before = game.scoring.score
-    lines_before = game.scoring.lines
-    game.hard_drop()
-    print(
-        "After scripted Tetris clear:",
-        f"cleared {game.scoring.lines - lines_before} lines,",
-        f"score delta = {game.scoring.score - score_before}",
+    renderer = Renderer()
+    phases = (
+        GamePhase.START,
+        GamePhase.PLAYING,
+        GamePhase.PAUSED,
+        GamePhase.GAME_OVER,
     )
-    print(render(game))
+    written = []
+    for phase in phases:
+        surf = render_phase(renderer, phase)
+        path = out_dir / f"tetris_{phase.value}.png"
+        pygame.image.save(surf, str(path))
+        written.append(path)
+
+    print(f"Wrote {len(written)} snapshots:")
+    for p in written:
+        print(f"  {p} ({p.stat().st_size} bytes)")
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())
