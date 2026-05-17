@@ -1,8 +1,31 @@
-# Tetris — Rendering & HUD Subsystem
+# Tetris
 
-Pure-rendering module for the modern Tetris project. Other modules
-(game loop, piece preview, input) produce a `RenderState` snapshot each
-frame; this package draws it.
+A full modern Tetris built from three subsystems in this repo:
+
+| Module                     | Concern                                              |
+|----------------------------|------------------------------------------------------|
+| `tetris.game`              | Board, gravity, lock delay, 7-bag, hold, scoring     |
+| `tetris.renderer` + `hud`  | Playfield, ghost piece, NEXT/HOLD panel, overlays    |
+| `modern_tetris.input`      | DAS/ARR keyboard controller, hold/pause, rebindable  |
+
+`tetris.main` wires them together into a playable game.
+
+## Play
+
+```bash
+pip install -r tetris/requirements.txt
+python -m tetris.main                   # opens a pygame window
+python -m tetris.main --seed 42         # deterministic 7-bag for testing
+```
+
+Default controls: arrow keys move / soft drop, `Space` hard drops, `Up`
+or `X` rotate clockwise, `Z` rotates counter-clockwise, `C` or `Shift`
+holds, `P` or `Esc` pauses, `Enter` starts a new round after game over.
+
+## Rendering subsystem (standalone)
+
+Pure-rendering module. Other modules (game loop, piece preview, input)
+produce a `RenderState` snapshot each frame; this package draws it.
 
 ## What it draws
 
@@ -46,5 +69,5 @@ pip install -r tetris/requirements.txt
 # Headless verification (writes PNGs to /tmp/tetris_snapshots):
 SDL_VIDEODRIVER=dummy python3 -m tetris.demo
 # Tests:
-SDL_VIDEODRIVER=dummy python3 -m unittest tetris.tests.test_renderer -v
+SDL_VIDEODRIVER=dummy python3 -m pytest tetris/tests modern_tetris/tests
 ```
