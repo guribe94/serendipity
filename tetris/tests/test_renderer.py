@@ -253,6 +253,70 @@ class RendererTests(unittest.TestCase):
                     diff += 1
         self.assertGreater(diff, 50, "game over overlay not visible on board")
 
+    # ---- effects -------------------------------------------------------
+
+    def test_clear_flash_brightens_flashed_row(self) -> None:
+        plain_state = _state(GamePhase.PLAYING)
+        plain_state.active_piece = None
+        plain_state.ghost_piece = None
+        flash_state = _state(GamePhase.PLAYING)
+        flash_state.active_piece = None
+        flash_state.ghost_piece = None
+        flash_state.last_clear_rows = (TOTAL_ROWS - 1,)
+
+        plain = self.renderer.create_surface()
+        flashed = self.renderer.create_surface()
+        self.renderer.draw(plain, plain_state)
+        self.renderer.draw(flashed, flash_state)
+
+        # Sample the bottom row in an empty column (the locked T sits in col 0).
+        visible_row = (TOTAL_ROWS - 1) - HIDDEN_ROWS
+        plain_sum = sum(_sample_cell_center(plain, 5, visible_row)[:3])
+        flash_sum = sum(_sample_cell_center(flashed, 5, visible_row)[:3])
+        self.assertGreater(flash_sum, plain_sum + 100, "flash overlay not visible")
+
+    # ---- draw gating ---------------------------------------------------
+
+    def test_ghost_not_drawn_outside_playing_phase(self) -> None:
+        with_ghost = _state(GamePhase.PAUSED)
+        without_ghost = _state(GamePhase.PAUSED)
+        without_ghost.ghost_piece = None
+
+        a = self.renderer.create_surface()
+        b = self.renderer.create_surface()
+        self.renderer.draw(a, with_ghost)
+        self.renderer.draw(b, without_ghost)
+        self.assertEqual(
+            pygame.image.tobytes(a, "RGBA"),
+            pygame.image.tobytes(b, "RGBA"),
+            "ghost was rendered while paused",
+        )
+
+    def test_active_piece_in_hidden_rows_is_not_drawn(self) -> None:
+        hidden = _state(GamePhase.PLAYING)
+        hidden.ghost_piece = None
+        hidden.active_piece = spawn_piece("I")  # spawn cells sit in rows 0..1
+        absent = _state(GamePhase.PLAYING)
+        absent.ghost_piece = None
+        absent.active_piece = None
+
+        a = self.renderer.create_surface()
+        b = self.renderer.create_surface()
+        self.renderer.draw(a, hidden)
+        self.renderer.draw(b, absent)
+        self.assertEqual(
+            pygame.image.tobytes(a, "RGBA"),
+            pygame.image.tobytes(b, "RGBA"),
+            "hidden-row cells leaked into the visible playfield",
+        )
+
+    def test_short_or_ragged_board_draws_without_error(self) -> None:
+        state = _state(GamePhase.PLAYING)
+        state.board = [[None] * 3 for _ in range(5)]  # fewer rows and columns
+        state.board[4][1] = "T"
+        surf = self.renderer.create_surface()
+        self.renderer.draw(surf, state)  # must not raise
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -1,11 +1,13 @@
 from tetris.board import Board
 from tetris.game import (
     LOCK_DELAY,
+    MAX_LOCK_RESETS,
     Game,
     GameState,
     LockEvent,
     gravity_period,
 )
+from tetris.scoring import LINES_PER_LEVEL, TSPIN_SCORES
 from tetris.tetromino import Tetromino
 
 
@@ -266,3 +268,161 @@ def test_lock_out_when_piece_locks_entirely_in_buffer():
     g.active = Tetromino(kind="O", row=0, col=4, rotation=0)
     g.hard_drop()
     assert g.is_game_over
+
+
+def _build_tspin_slot(g: Game) -> None:
+    """Bottom row full except a notch at col 5, with a T-slot above it.
+
+    A T in rotation 2 locked at origin (19, 4) drops its nub into the notch;
+    corners (19,4), (21,4), (21,6) are filled so T-spin detection sees 3/4.
+    """
+    for c in range(Board.WIDTH):
+        if c != 5:
+            g.board.grid[Board.HEIGHT - 1][c] = "X"
+    g.board.grid[Board.HEIGHT - 3][4] = "X"
+
+
+def test_tspin_full_detected_when_rotation_is_last_action():
+    g = Game(seed=1)
+    g.start()
+    _build_tspin_slot(g)
+    captured = []
+    g.hooks.on_lock = captured.append
+    # T in rotation 1 beside the slot; CW rotation drops it into rotation 2
+    # with the zero kick, leaving the piece landed.
+    g.active = Tetromino(kind="T", row=Board.HEIGHT - 3, col=4, rotation=1)
+    assert g.rotate(1)
+    g.hard_drop()  # zero-cell drop: locks in place without clearing the spin flag
+    assert len(captured) == 1
+    ev: LockEvent = captured[0]
+    assert ev.tspin == "full"
+    assert ev.cleared_lines == [Board.HEIGHT - 1]
+    assert ev.score_delta == TSPIN_SCORES[1]  # level 1, no combo, no back-to-back
+    assert g.scoring.lines == 1
+
+
+def test_tspin_not_awarded_when_piece_falls_after_rotating():
+    g = Game(seed=1)
+    g.start()
+    _build_tspin_slot(g)
+    captured = []
+    g.hooks.on_lock = captured.append
+    # Rotate high above the slot, then hard drop: the descent clears the
+    # rotation flag and the slot is unreachable from straight above.
+    g.active = Tetromino(kind="T", row=10, col=4, rotation=1)
+    assert g.rotate(1)
+    g.hard_drop()
+    assert len(captured) == 1
+    assert captured[0].tspin is None
+    assert captured[0].cleared_lines == []
+
+
+def test_movement_resets_lock_delay_while_landed():
+    g = Game(seed=1)
+    g.start()
+    locks = []
+    g.hooks.on_lock = locks.append
+    while g.soft_drop():
+        pass
+    g.tick(LOCK_DELAY * 0.8)
+    assert g.move(1)  # landed move resets the lock timer
+    g.tick(LOCK_DELAY * 0.8)  # would have locked without the reset
+    assert locks == []
+    g.tick(LOCK_DELAY * 0.4)  # 0.8 + 0.4 lock-delays since the reset
+    assert len(locks) == 1
+
+
+def test_lock_resets_are_capped_at_max():
+    g = Game(seed=1)
+    g.start()
+    locks = []
+    g.hooks.on_lock = locks.append
+    while g.soft_drop():
+        pass
+    for i in range(MAX_LOCK_RESETS):
+        assert g.move(1 if i % 2 == 0 else -1)
+    g.tick(LOCK_DELAY * 0.8)
+    assert g.move(1)  # still moves, but can no longer reset the timer
+    g.tick(LOCK_DELAY * 0.4)
+    assert len(locks) == 1
+
+
+def test_hold_with_empty_slot_pulls_next_preview_piece():
+    g = Game(seed=1)
+    g.start()
+    first = g.active.kind
+    upcoming = g.next_pieces(1)[0]
+    assert g.hold()
+    assert g.held == first
+    assert g.active.kind == upcoming
+
+
+def test_hold_hook_reports_previous_and_current_kinds():
+    g = Game(seed=1)
+    g.start()
+    captured = []
+    g.hooks.on_hold = lambda prev, cur: captured.append((prev, cur))
+    first = g.active.kind
+    g.hold()
+    assert captured == [(None, first)]
+
+
+def test_spawn_hook_fires_on_start():
+    g = Game(seed=1)
+    spawned = []
+    g.hooks.on_spawn = lambda piece: spawned.append(piece.kind)
+    g.start()
+    assert len(spawned) == 1
+    assert spawned[0] == g.active.kind
+
+
+def test_level_change_hook_fires_when_crossing_line_threshold():
+    g = Game(seed=1)
+    g.start()
+    levels = []
+    g.hooks.on_level_change = levels.append
+    g.scoring.state.lines = LINES_PER_LEVEL - 1  # one line short of level 2
+    g.board.grid[Board.HEIGHT - 1] = ["X"] * Board.WIDTH
+    g.board.grid[Board.HEIGHT - 1][5] = None
+    g.active = Tetromino(kind="I", row=0, col=3, rotation=1)
+    g.hard_drop()
+    assert levels == [2]
+
+
+def test_restart_after_game_over_resets_board_and_score():
+    g = Game(seed=1)
+    g.start()
+    g.hard_drop()
+    assert g.scoring.score > 0
+    g.state = GameState.GAME_OVER
+    g.start()
+    assert g.is_playing
+    assert g.scoring.score == 0
+    assert g.held is None
+    assert g.active is not None
+    assert all(cell is None for row in g.board.grid for cell in row)
+
+
+def test_starting_level_flows_through_start():
+    g = Game(seed=1, starting_level=4)
+    g.start()
+    assert g.scoring.level == 4
+
+
+def test_gravity_period_clamps_at_both_extremes():
+    # Levels below 1 are clamped up to level 1 (guideline: 1.0 s per cell).
+    assert gravity_period(0) == gravity_period(-5) == gravity_period(1) == 1.0
+    # Very high levels clamp to one cell per frame at 60 FPS.
+    assert gravity_period(200) == 1 / 60
+
+
+def test_ghost_is_none_before_start_and_matches_landed_piece():
+    g = Game(seed=1)
+    assert g.ghost_position() is None
+    g.start()
+    while g.soft_drop():
+        pass
+    ghost = g.ghost_position()
+    assert ghost is not None
+    assert ghost.row == g.active.row
+    assert set(ghost.blocks()) == set(g.active.blocks())
