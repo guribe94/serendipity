@@ -107,6 +107,98 @@ def test_build_render_state_maps_game_phase_correctly():
     assert state.phase is GamePhase.GAME_OVER
 
 
+def test_effects_banner_and_flash_expire_independently():
+    effects = _Effects()
+    effects.set_banner("TETRIS!", now_ms=1_000)  # expires at 2_100
+    effects.set_flash([20, 21], now_ms=1_000)    # expires at 1_220
+    effects.tick(1_219)
+    assert effects.banner == "TETRIS!"
+    assert effects.flash_rows == [20, 21]
+    effects.tick(1_220)
+    assert effects.flash_rows == []
+    assert effects.banner == "TETRIS!"
+    effects.tick(2_100)
+    assert effects.banner is None
+
+
+def test_install_hooks_maps_lock_events_to_banners_and_flashes():
+    from tetris.game import LockEvent
+    from tetris.main import _install_hooks
+    from tetris.tetromino import Tetromino
+
+    cases = [
+        ([], None, None),
+        ([21], None, "SINGLE"),
+        ([20, 21], None, "DOUBLE"),
+        ([18, 19, 20, 21], None, "TETRIS!"),
+        ([21], "full", "T-SPIN SINGLE"),
+        ([], "full", "T-SPIN"),
+        ([], "mini", "T-SPIN"),
+    ]
+    for cleared, tspin, expected in cases:
+        game = Game(seed=1)
+        effects = _Effects()
+        _install_hooks(game, effects, lambda: 0)
+        ev = LockEvent(
+            piece=Tetromino(kind="T", row=0, col=3),
+            cleared_lines=list(cleared),
+            tspin=tspin,
+            score_delta=0,
+        )
+        game.hooks.on_lock(ev)
+        assert effects.banner == expected, (cleared, tspin)
+        assert effects.flash_rows == list(cleared)
+
+
+def test_toggle_pause_is_noop_before_start():
+    adapter = GameAdapter(Game(seed=1))
+    adapter.toggle_pause()
+    assert adapter.paused is False
+
+
+def test_restart_unpauses_and_starts_a_fresh_round():
+    game = Game(seed=1)
+    game.start()
+    game.hard_drop()
+    assert game.scoring.score > 0
+    adapter = GameAdapter(game)
+    adapter.toggle_pause()
+    assert adapter.paused is True
+    adapter.restart()
+    assert adapter.paused is False
+    assert game.is_playing
+    assert game.scoring.score == 0
+
+
+def test_build_render_state_reflects_hold_and_omits_landed_ghost():
+    game = Game(seed=1)
+    game.start()
+    adapter = GameAdapter(game)
+    effects = _Effects()
+
+    held_kind = game.active.kind
+    game.hold()
+    state = build_render_state(adapter, effects)
+    assert state.held_piece is not None
+    assert state.held_piece.kind == held_kind
+
+    while game.soft_drop():
+        pass
+    state = build_render_state(adapter, effects)
+    assert state.active_piece is not None
+    assert state.ghost_piece is None  # ghost coincides with the landed piece
+
+
+def test_build_render_state_copies_the_board():
+    from tetris.board import Board
+
+    game = Game(seed=1)
+    game.start()
+    state = build_render_state(GameAdapter(game), _Effects())
+    state.board[Board.HEIGHT - 1][0] = "X"
+    assert game.board.grid[Board.HEIGHT - 1][0] is None
+
+
 def test_build_render_state_emits_tetris_banner_after_quad_clear():
     """A full 4-line clear fires the on_lock hook and surfaces a TETRIS! banner."""
     from tetris.board import Board

@@ -90,3 +90,35 @@ def test_visible_rows_skips_buffer():
     rows = list(b.visible_rows())
     assert len(rows) == Board.VISIBLE_HEIGHT
     assert rows[0][0] == Board.BUFFER_HEIGHT
+
+
+def test_full_buffer_row_is_clearable_too():
+    b = Board()
+    for c in range(Board.WIDTH):
+        b.grid[0][c] = "X"
+    assert b.clear_full_lines() == [0]
+    assert all(cell is None for cell in b.grid[0])
+
+
+def test_grid_shape_is_preserved_after_clears():
+    b = Board()
+    for r in (Board.HEIGHT - 1, Board.HEIGHT - 2):
+        for c in range(Board.WIDTH):
+            b.grid[r][c] = "X"
+    assert len(b.clear_full_lines()) == 2
+    assert len(b.grid) == Board.HEIGHT
+    assert all(len(row) == Board.WIDTH for row in b.grid)
+
+
+def test_is_cell_free_for_occupied_and_outside_cells():
+    b = Board()
+    b.place([(3, 3)], "T")
+    assert not b.is_cell_free(3, 3)
+    assert b.is_cell_free(3, 4)
+    assert not b.is_cell_free(-1, 0)
+    assert not b.is_cell_free(0, Board.WIDTH)
+
+
+def test_can_place_with_no_cells_is_vacuously_true():
+    b = Board()
+    assert b.can_place([])

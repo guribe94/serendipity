@@ -47,3 +47,31 @@ def test_long_run_keeps_bag_proportions_balanced():
 def test_peek_default_uses_configured_preview_length():
     bag = SevenBag(seed=3, preview=6)
     assert len(bag.peek()) == 6
+
+
+def test_same_kind_never_more_than_twelve_pieces_apart():
+    """7-bag guarantee: at most 12 other pieces between two of the same kind."""
+    bag = SevenBag(seed=11)
+    last_seen = {}
+    for i in range(7 * 40):
+        kind = bag.next()
+        if kind in last_seen:
+            assert i - last_seen[kind] <= 13
+        last_seen[kind] = i
+
+
+def test_preview_is_clamped_to_at_least_one():
+    bag = SevenBag(seed=5, preview=0)
+    assert len(bag.peek()) == 1
+
+
+def test_unseeded_bag_still_emits_full_permutations():
+    bag = SevenBag()
+    assert sorted(bag.next() for _ in range(7)) == sorted(KINDS)
+
+
+def test_peek_stays_full_length_while_consuming():
+    bag = SevenBag(seed=8, preview=5)
+    for _ in range(100):
+        assert len(bag.peek(5)) == 5
+        bag.next()
