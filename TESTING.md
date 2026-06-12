@@ -13,7 +13,7 @@ pip install --break-system-packages "pygame>=2.5" "pytest>=7"
 SDL_VIDEODRIVER=dummy SDL_AUDIODRIVER=dummy python3 -m pytest tetris modern_tetris -q
 
 # Snake (zero-dependency Node harness, Node >= 18)
-node snake_game/test.headless.js
+node snake_game/test.run.js
 ```
 
 ## Project status
@@ -22,7 +22,7 @@ node snake_game/test.headless.js
 |---|---|---|---|
 | `tetris/` | Python 3 + pygame | `tetris/tests/` (pytest) | ✅ tested, runs headless |
 | `modern_tetris/` | Python 3 + pygame | `modern_tetris/tests/` (pytest) | ✅ tested, runs headless |
-| `snake_game/` | Browser JS (no build) | `snake_game/test.headless.js` (Node, zero deps) | ✅ tested headless |
+| `snake_game/` | Browser JS (no build) | `snake_game/test.*.js` via `test.run.js` (Node, zero deps) | ✅ tested headless |
 | `serendipity_django/` | Django 1.7.4 (2015, Python 2 era) | `api/tests.py` is an empty stub | ❌ untestable as-is (see below) |
 | `google_place_api_search/` | Python script | none | ❌ untestable as-is (see below) |
 | `serendipity_iOS/` | Xcode project (iOS + WatchKit) | `SerendipityTestTests/` | ⛔ requires macOS/Xcode |
@@ -82,11 +82,14 @@ directory, not just `modern_tetris/tests/`.
 ### `snake_game/` (browser Snake)
 
 ```bash
-node snake_game/test.headless.js
+node snake_game/test.run.js          # runs all 5 test files
+node snake_game/test.powerups.js     # or any single file standalone
 ```
 
-Zero-dependency harness: stubs browser globals (`document`, `canvas`, `AudioContext`,
-`requestAnimationFrame`), loads `game.js`, and drives the game deterministically —
-movement, food/growth, scoring, power-ups, collisions, state transitions.
+Zero-dependency harness (`test.harness.js`): stubs browser globals (`document`, `canvas`,
+`AudioContext`, `requestAnimationFrame`) in a fresh VM context per test, with a fake
+clock and deterministic RNG, then drives `game.js` directly. Suites: `test.headless.js`
+(original smoke), `test.powerups.js`, `test.collisions.js`, `test.scoring.js`,
+`test.statemachine.js`.
 
 The game itself is played by opening `snake_game/index.html` in a browser.
