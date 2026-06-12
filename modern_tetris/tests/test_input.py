@@ -411,3 +411,152 @@ def test_default_bindings_cover_every_action_except_rotate_180():
             assert keys == ()
         else:
             assert keys, f"{action} should have at least one default binding"
+
+
+# ---------------------------------------------------------------------------
+# DAS / ARR timing edges
+# ---------------------------------------------------------------------------
+
+
+def test_das_boundary_fires_exactly_at_das():
+    ctrl, game = _ctrl(TimingConfig(das_ms=100, arr_ms=20))
+    ctrl.press(Action.MOVE_LEFT, now_ms=0)
+    ctrl.update(now_ms=99)
+    assert game.count("move_left") == 1   # 1ms early: nothing
+    ctrl.update(now_ms=100)
+    assert game.count("move_left") == 2   # exactly at DAS: first repeat
+    ctrl.update(now_ms=100)
+    assert game.count("move_left") == 2   # same timestamp: no double fire
+    ctrl.update(now_ms=119)
+    assert game.count("move_left") == 2   # 1ms before the ARR boundary
+    ctrl.update(now_ms=120)
+    assert game.count("move_left") == 3   # exactly at DAS + ARR
+
+
+def test_das_zero_starts_repeating_immediately():
+    ctrl, game = _ctrl(TimingConfig(das_ms=0, arr_ms=20))
+    ctrl.press(Action.MOVE_LEFT, now_ms=0)
+    ctrl.update(now_ms=0)
+    assert game.count("move_left") == 2   # press + zero-delay repeat
+    ctrl.update(now_ms=20)
+    assert game.count("move_left") == 3   # then at ARR cadence
+
+
+def test_single_late_update_catches_up_at_arr_rate():
+    ctrl, game = _ctrl(TimingConfig(das_ms=100, arr_ms=20))
+    ctrl.press(Action.MOVE_LEFT, now_ms=0)
+    ctrl.update(now_ms=200)
+    # Repeats due at 100,120,140,160,180,200 == 6, plus the initial press.
+    assert game.count("move_left") == 7
+
+
+def test_stall_backlog_is_dropped_after_cap():
+    """Hitting the per-tick cap must also drop the remaining backlog —
+    otherwise a long stall keeps bursting max-rate repeats for many frames."""
+    ctrl, game = _ctrl(TimingConfig(das_ms=100, arr_ms=20, max_repeats_per_tick=4))
+    ctrl.press(Action.MOVE_LEFT, now_ms=0)
+    ctrl.update(now_ms=5_000)             # stall: capped at 4 repeats
+    assert game.count("move_left") == 5
+    ctrl.update(now_ms=5_010)             # next frame: backlog gone, nothing due
+    assert game.count("move_left") == 5
+    ctrl.update(now_ms=5_020)             # normal ARR cadence resumes
+    assert game.count("move_left") == 6
+
+
+def test_repress_same_direction_fires_and_restarts_das():
+    ctrl, game = _ctrl(TimingConfig(das_ms=100, arr_ms=20))
+    ctrl.press(Action.MOVE_LEFT, now_ms=0)
+    ctrl.update(now_ms=100)
+    assert game.count("move_left") == 2
+    # A second KEYDOWN without KEYUP (e.g. OS key-repeat) is a fresh press.
+    ctrl.press(Action.MOVE_LEFT, now_ms=110)
+    assert game.count("move_left") == 3
+    ctrl.update(now_ms=130)
+    assert game.count("move_left") == 3   # old ARR cadence is gone
+    ctrl.update(now_ms=210)
+    assert game.count("move_left") == 4   # DAS restarted from the re-press
+
+
+def test_handover_without_timestamp_keeps_survivor_schedule():
+    ctrl, game = _ctrl(TimingConfig(das_ms=100, arr_ms=20))
+    ctrl.press(Action.MOVE_LEFT, now_ms=0)     # left DAS due at 100
+    ctrl.press(Action.MOVE_RIGHT, now_ms=50)   # right takes over
+    ctrl.release(Action.MOVE_RIGHT)            # no now_ms: left keeps old timing
+    ctrl.update(now_ms=150)
+    # Left repeats due at 100, 120, 140 == 3, plus each direction's press.
+    assert game.count("move_left") == 4
+    assert game.count("move_right") == 1
+
+
+def test_inactive_held_direction_never_auto_repeats():
+    ctrl, game = _ctrl(TimingConfig(das_ms=100, arr_ms=20))
+    ctrl.press(Action.MOVE_LEFT, now_ms=0)
+    ctrl.press(Action.MOVE_RIGHT, now_ms=10)   # right owns auto-repeat
+    ctrl.update(now_ms=400)                    # way past left's original DAS
+    assert game.count("move_left") == 1        # only the initial press
+    assert game.count("move_right") >= 2
+
+
+def test_update_with_nothing_held_is_a_noop():
+    ctrl, game = _ctrl()
+    ctrl.update(now_ms=0)
+    ctrl.update(now_ms=1_000)
+    assert game.calls == []
+
+
+def test_retime_applies_to_soft_drop_repeats():
+    ctrl, game = _ctrl(TimingConfig(das_ms=100, arr_ms=20, soft_drop_ms=10))
+    ctrl.press(Action.SOFT_DROP, now_ms=0)     # next repeat at 10
+    ctrl.update(now_ms=10)                     # fires; next scheduled at 20
+    ctrl.retime(TimingConfig(das_ms=100, arr_ms=20, soft_drop_ms=50))
+    ctrl.update(now_ms=20)                     # fires; next now at 20 + 50 = 70
+    ctrl.update(now_ms=60)
+    assert game.count("soft_drop") == 3        # nothing before 70
+    ctrl.update(now_ms=70)
+    assert game.count("soft_drop") == 4
+
+
+def test_soft_drop_long_stall_caps_and_drops_backlog():
+    ctrl, game = _ctrl(TimingConfig(soft_drop_ms=10, max_repeats_per_tick=6))
+    ctrl.press(Action.SOFT_DROP, now_ms=0)
+    ctrl.update(now_ms=10_000)
+    assert game.count("soft_drop") == 1 + 6    # press + capped repeats
+    ctrl.update(now_ms=10_005)
+    assert game.count("soft_drop") == 1 + 6    # backlog dropped with the cap
+    ctrl.update(now_ms=10_010)
+    assert game.count("soft_drop") == 1 + 6 + 1
+
+
+# ---------------------------------------------------------------------------
+# Event adapter / binding edges
+# ---------------------------------------------------------------------------
+
+
+def test_handle_event_returns_fired_action_on_keydown_only():
+    import pygame
+    ctrl, game = _ctrl()
+    down = ctrl.handle_event(FakeEvent(type=pygame.KEYDOWN, key=pygame.K_LEFT), now_ms=0)
+    up = ctrl.handle_event(FakeEvent(type=pygame.KEYUP, key=pygame.K_LEFT), now_ms=10)
+    assert down is Action.MOVE_LEFT
+    assert up is None
+
+
+def test_handle_event_tolerates_events_without_key_attribute():
+    import pygame
+
+    @dataclass
+    class TypeOnlyEvent:
+        type: int
+
+    ctrl, game = _ctrl()
+    result = ctrl.handle_event(TypeOnlyEvent(type=pygame.KEYDOWN), now_ms=0)
+    assert result is None
+    assert game.calls == []
+
+
+def test_duplicate_key_across_actions_last_binding_wins():
+    bindings = KeyBindings()
+    key = ord("q")
+    bindings.set(Action.HARD_DROP, [key])
+    bindings.set(Action.HOLD, [key])  # HOLD comes later in the bindings table
+    assert bindings.build_lookup()[key] is Action.HOLD

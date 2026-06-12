@@ -77,3 +77,20 @@ def test_bag_default_rng_does_not_raise():
     bag = SevenBag()
     pieces = [bag.pop() for _ in range(7)]
     assert sorted(p.value for p in pieces) == sorted(p.value for p in PieceKind)
+
+
+def test_peek_remaining_empty_after_bag_exhausted():
+    bag = SevenBag(rng=random.Random(3))
+    for _ in range(7):
+        bag.pop()
+    # Refill is lazy: the bag stays empty until the next pop demands a piece.
+    assert bag.peek_remaining() == []
+    bag.pop()
+    assert len(bag.peek_remaining()) == 6
+
+
+def test_pop_deals_from_front_of_peeked_order():
+    bag = SevenBag(rng=random.Random(9))
+    upcoming = bag.peek_remaining()
+    dealt = [bag.pop() for _ in range(7)]
+    assert dealt == upcoming

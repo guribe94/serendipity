@@ -85,3 +85,33 @@ def test_queue_peek_does_not_mutate_state():
     # Mutating the returned list does not affect the queue.
     first.clear()
     assert q.peek() == SEQ[:5]
+
+
+class CountingSource(CyclicSource):
+    """CyclicSource that counts how many pieces the queue has drawn."""
+
+    def __init__(self, seq):
+        super().__init__(seq)
+        self.pops = 0
+
+    def pop(self):
+        self.pops += 1
+        return super().pop()
+
+
+def test_queue_size_one_works():
+    q = NextQueue(CyclicSource(SEQ), size=1)
+    assert q.peek() == [PieceKind.I]
+    assert q.pop() == PieceKind.I
+    assert q.peek() == [PieceKind.O]
+
+
+def test_queue_draws_exactly_one_piece_per_pop():
+    src = CountingSource(SEQ)
+    q = NextQueue(src, size=5)
+    assert src.pops == 5  # initial fill draws exactly `size`
+    q.pop()
+    assert src.pops == 6  # each pop backfills exactly one
+    q.peek()
+    q.peek(3)
+    assert src.pops == 6  # peeking never draws

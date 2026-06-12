@@ -109,3 +109,54 @@ def test_ghost_after_rotation_via_with_cells():
     assert max(r for _, r in ghost.cells) == 19
     # All cells preserve their column.
     assert {c for c, _ in ghost.cells} == {c for c, _ in rotated.cells}
+
+
+def test_ghost_at_left_edge_column_zero():
+    pred = make_predicate(floor_row=20, board_width=10)
+    piece = Tetromino.spawn(PieceKind.I).translated(-3, 0)  # cols 0..3
+    assert min(c for c, _ in piece.cells) == 0
+    ghost = ghost_for(piece, pred)
+    # Hugs the wall all the way down: columns unchanged, lands on the floor.
+    assert {c for c, _ in ghost.cells} == {0, 1, 2, 3}
+    assert max(r for _, r in ghost.cells) == 19
+
+
+def test_ghost_at_right_edge_column():
+    pred = make_predicate(floor_row=20, board_width=10)
+    piece = Tetromino.spawn(PieceKind.I).translated(3, 0)  # cols 6..9
+    assert max(c for c, _ in piece.cells) == 9
+    ghost = ghost_for(piece, pred)
+    assert {c for c, _ in ghost.cells} == {6, 7, 8, 9}
+    assert max(r for _, r in ghost.cells) == 19
+
+
+def test_ghost_descends_into_narrow_well():
+    # Stacks fill columns 0-3 and 6-9 from row 10 down, leaving a 2-wide well.
+    walls = {(c, r) for c in (0, 1, 2, 3, 6, 7, 8, 9) for r in range(10, 20)}
+    pred = make_predicate(floor_row=20, walls=walls)
+    piece = Tetromino.spawn(PieceKind.O)  # cols 4,5 — exactly over the well
+    ghost = ghost_for(piece, pred)
+    # Slides past the stack tops and reaches the floor inside the well.
+    assert max(r for _, r in ghost.cells) == 19
+    assert {c for c, _ in ghost.cells} == {4, 5}
+
+
+def test_ghost_rests_on_tallest_supporting_column():
+    walls = (
+        {(3, r) for r in range(15, 20)}
+        | {(4, r) for r in range(17, 20)}
+        | {(5, r) for r in range(18, 20)}
+    )
+    pred = make_predicate(floor_row=20, walls=walls)
+    piece = Tetromino.spawn(PieceKind.T)  # bottom row spans cols 3,4,5
+    ghost = ghost_for(piece, pred)
+    # The col-3 stack (top at row 15) is the highest support under the piece.
+    assert max(r for _, r in ghost.cells) == 14
+
+
+def test_ghost_max_drop_zero_returns_active_position():
+    pred = make_predicate(floor_row=20)
+    piece = Tetromino.spawn(PieceKind.T)
+    ghost = ghost_for(piece, pred, max_drop=0)
+    assert ghost.cells == piece.cells
+    assert ghost.kind == piece.kind

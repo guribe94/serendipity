@@ -160,3 +160,99 @@ def test_pygame_renderer_consumes_generator_queue(pygame_headless):
     r = PygameRenderer(playfield_surface=playfield, next_panel_surface=panel, cell_size=30)
     gen = (k for k in (PieceKind.I, PieceKind.T))
     r.render_next_queue(gen)  # Should iterate the generator without issue.
+
+
+def test_pygame_renderer_stacks_queue_items_vertically(pygame_headless):
+    pygame = pygame_headless
+    from modern_tetris.preview.pieces import COLORS
+    from modern_tetris.preview.rendering import PygameRenderer
+
+    playfield = pygame.Surface((300, 600))
+    panel = pygame.Surface((150, 600))
+    r = PygameRenderer(
+        playfield_surface=playfield,
+        next_panel_surface=panel,
+        cell_size=30,  # mini cell = 15
+        next_padding=12,  # slot height = 4*15 + 12 = 72
+        panel_bg=(0, 0, 0),
+    )
+    r.render_next_queue([PieceKind.I, PieceKind.O])
+    # Slot 0 starts at y=12. The I bar is one cell tall and 4 cells wide,
+    # centered at x=45; an interior pixel of its first cell is (52, 19).
+    assert panel.get_at((52, 19))[:3] == COLORS[PieceKind.I]
+    # Slot 1 starts at y=12+72=84. O is centered at x=60; top-left cell
+    # interior pixel is (67, 91).
+    assert panel.get_at((67, 91))[:3] == COLORS[PieceKind.O]
+    # The space between the I bar and slot 1 stays background.
+    assert panel.get_at((52, 50))[:3] == (0, 0, 0)
+
+
+def test_pygame_renderer_centers_mini_pieces_horizontally(pygame_headless):
+    pygame = pygame_headless
+    from modern_tetris.preview.rendering import PygameRenderer
+
+    playfield = pygame.Surface((300, 600))
+    panel = pygame.Surface((150, 600))
+    r = PygameRenderer(
+        playfield_surface=playfield,
+        next_panel_surface=panel,
+        cell_size=30,  # mini cell = 15; O is 30px wide on a 150px panel
+        next_padding=12,
+        panel_bg=(0, 0, 0),
+    )
+    r.render_next_queue([PieceKind.O])
+    row = 19  # interior row of O's top cells (slot 0 starts at y=12)
+    colored = [x for x in range(150) if panel.get_at((x, row))[:3] != (0, 0, 0)]
+    assert colored, "expected O pixels on the panel"
+    assert min(colored) == 60  # (150 - 30) // 2
+    assert max(colored) == 88  # 60 + 30 - 1, minus the 1px cell gutter
+
+
+def test_pygame_renderer_clamps_overrange_ghost_alpha(pygame_headless):
+    pygame = pygame_headless
+    from modern_tetris.preview.pieces import COLORS
+    from modern_tetris.preview.rendering import PygameRenderer
+
+    playfield = pygame.Surface((300, 600))
+    panel = pygame.Surface((150, 600))
+    playfield.fill((0, 0, 0))
+    r = PygameRenderer(
+        playfield_surface=playfield,
+        next_panel_surface=panel,
+        cell_size=30,
+        ghost_alpha=999,  # clamps to 255: fully opaque fill
+    )
+    ghost = Tetromino.spawn(PieceKind.O).translated(0, 18)
+    r.render_ghost(ghost)
+    assert playfield.get_at((130, 550))[:3] == COLORS[PieceKind.O]
+
+
+def test_pygame_renderer_clamps_negative_ghost_alpha(pygame_headless):
+    pygame = pygame_headless
+    from modern_tetris.preview.rendering import PygameRenderer
+
+    playfield = pygame.Surface((300, 600))
+    panel = pygame.Surface((150, 600))
+    playfield.fill((0, 0, 0))
+    r = PygameRenderer(
+        playfield_surface=playfield,
+        next_panel_surface=panel,
+        cell_size=30,
+        ghost_alpha=-50,  # clamps to 0: invisible fill, outline still drawn
+    )
+    ghost = Tetromino.spawn(PieceKind.O).translated(0, 18)
+    r.render_ghost(ghost)
+    # Cell (4,18) covers pixels (120,540)-(149,569) with a 2px outline.
+    assert playfield.get_at((130, 550))[:3] == (0, 0, 0)  # interior: transparent
+    assert playfield.get_at((121, 550))[:3] != (0, 0, 0)  # outline: visible
+
+
+def test_pygame_renderer_handles_queue_longer_than_panel(pygame_headless):
+    pygame = pygame_headless
+    from modern_tetris.preview.rendering import PygameRenderer
+
+    playfield = pygame.Surface((300, 600))
+    panel = pygame.Surface((150, 600))
+    r = PygameRenderer(playfield_surface=playfield, next_panel_surface=panel, cell_size=30)
+    # 20 slots extend far past the 600px panel; drawing must clip, not raise.
+    r.render_next_queue([PieceKind.I] * 20)
