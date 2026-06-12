@@ -10,7 +10,7 @@ tested in a Linux/CI environment and why.
 pip install --break-system-packages "pygame>=2.5" "pytest>=7"
 
 # Python suites (headless — no display/audio needed)
-SDL_VIDEODRIVER=dummy SDL_AUDIODRIVER=dummy python3 -m pytest tetris/tests modern_tetris/tests -q
+SDL_VIDEODRIVER=dummy SDL_AUDIODRIVER=dummy python3 -m pytest tetris modern_tetris -q
 
 # Snake (zero-dependency Node harness, Node >= 18)
 node snake_game/test.headless.js
@@ -71,11 +71,13 @@ renderer (headless), and `main.py` integration.
 ### `modern_tetris/` (input + preview package)
 
 ```bash
-SDL_VIDEODRIVER=dummy SDL_AUDIODRIVER=dummy python3 -m pytest modern_tetris/tests -q
+SDL_VIDEODRIVER=dummy SDL_AUDIODRIVER=dummy python3 -m pytest modern_tetris -q
 ```
 
 Covers the DAS/ARR input controller and the `preview/` package (7-bag, NEXT queue,
-ghost projection, rendering).
+ghost projection, rendering). Note the suites live in two places —
+`modern_tetris/tests/` and `modern_tetris/preview/tests/` — so target the package
+directory, not just `modern_tetris/tests/`.
 
 ### `snake_game/` (browser Snake)
 
