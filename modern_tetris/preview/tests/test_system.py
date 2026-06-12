@@ -174,3 +174,44 @@ def test_active_property_is_none_initially():
     assert p.ghost is None
     # But queue is populated up front so the HUD has something to show.
     assert len(p.upcoming()) == 5
+
+
+def test_spawn_uses_configured_board_width_and_spawn_row():
+    p = PreviewSystem(
+        queue_size=5,
+        bag=SevenBag(rng=random.Random(3)),
+        board_width=6,
+        spawn_row=2,
+    )
+    floor = floor_predicate(board_width=6)
+    for _ in range(7):
+        spawned = p.spawn_next(floor)
+        reference = Tetromino.spawn(spawned.kind, board_width=6, spawn_row=2)
+        assert spawned.cells == reference.cells
+        assert all(0 <= c < 6 for c, _ in spawned.cells)
+
+
+def test_reset_with_new_queue_size():
+    p = PreviewSystem(queue_size=5)
+    p.reset(queue_size=3)
+    assert p.queue_size == 3
+    assert len(p.upcoming()) == 3
+
+
+def test_spawn_when_blocked_top_out_keeps_ghost_at_active():
+    p = PreviewSystem(queue_size=5, bag=SevenBag(rng=random.Random(5)))
+
+    def always_blocked(cells):
+        return True
+
+    piece = p.spawn_next(always_blocked)
+    # Top-out: the ghost cannot descend, so it coincides with the active piece.
+    assert p.ghost is not None
+    assert p.ghost.cells == piece.cells
+
+
+def test_preview_package_exports_resolve():
+    import modern_tetris.preview as preview
+
+    for name in preview.__all__:
+        assert getattr(preview, name, None) is not None, name
