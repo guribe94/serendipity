@@ -156,8 +156,11 @@
     if (cfg.duration > 0) {
       game.actives[type] = { expiresAt: now + cfg.duration };
     } else if (type === 'shrink') {
-      // Instant: cut length in half, minimum length 3
-      const keep = Math.max(3, Math.floor(game.snake.length / 2));
+      // Instant: cut length in half, minimum length 3.
+      // The new head is already unshifted and step() will still pop the tail,
+      // so compute from the pre-pickup length and keep one extra segment.
+      const preLength = game.snake.length - 1;
+      const keep = Math.max(3, Math.floor(preLength / 2)) + 1;
       game.snake.splice(keep);
     }
   }
