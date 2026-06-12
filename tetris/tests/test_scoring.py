@@ -3,6 +3,8 @@ from tetris.scoring import (
     LINES_PER_LEVEL,
     LINE_SCORES,
     SOFT_DROP_POINTS,
+    TSPIN_MINI_SCORES,
+    TSPIN_SCORES,
     Scoring,
 )
 
@@ -91,3 +93,48 @@ def test_level_only_advances_never_drops():
     s = Scoring(starting_level=5)
     s.add_line_clear(1)
     assert s.level == 5  # one line at level 5 should not regress to level 1
+
+
+def test_tspin_full_without_lines_scores_400():
+    s = Scoring()
+    delta = s.add_line_clear(0, tspin="full")
+    assert delta == TSPIN_SCORES[0]
+    assert s.score == TSPIN_SCORES[0]
+    assert s.lines == 0
+
+
+def test_tspin_mini_single_scores_200():
+    s = Scoring()
+    s.add_line_clear(1, tspin="mini")
+    assert s.score == TSPIN_MINI_SCORES[1]
+
+
+def test_back_to_back_survives_a_zero_line_tspin():
+    s = Scoring()
+    s.add_line_clear(4)                # 800, difficult
+    s.add_line_clear(0, tspin="full")  # 400; combo resets, chain untouched
+    s.add_line_clear(4)                # back-to-back: 1200, combo back to 0
+    assert s.score == 800 + 400 + 1200
+
+
+def test_line_scores_scale_with_level():
+    s = Scoring(starting_level=3)
+    s.add_line_clear(2)
+    assert s.score == LINE_SCORES[2] * 3
+
+
+def test_combo_bonus_scales_with_level():
+    s = Scoring(starting_level=2)
+    first = s.add_line_clear(1)   # 100 * 2, combo 0 -> no bonus
+    second = s.add_line_clear(1)  # 100 * 2 + 50 * 1 * 2 combo bonus
+    assert (first, second) == (200, 300)
+
+
+def test_returned_deltas_always_sum_to_the_score():
+    s = Scoring()
+    total = 0
+    for lines, tspin in ((1, None), (4, None), (0, None), (2, "full"), (0, "mini")):
+        total += s.add_line_clear(lines, tspin=tspin)
+    total += s.add_soft_drop(3)
+    total += s.add_hard_drop(4)
+    assert s.score == total

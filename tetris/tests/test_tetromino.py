@@ -1,3 +1,7 @@
+import dataclasses
+
+import pytest
+
 from tetris.tetromino import COLORS, KINDS, SHAPES, Tetromino, kick_table
 
 
@@ -70,3 +74,42 @@ def test_i_piece_rotation_cells_span_correct_axes():
     i_vertical = Tetromino(kind="I", row=0, col=0, rotation=1).blocks()
     cols = {c for _, c in i_vertical}
     assert len(cols) == 1  # all in one column
+
+
+def test_every_rotation_fits_inside_a_four_by_four_box():
+    for kind in KINDS:
+        for cells in SHAPES[kind]:
+            for dr, dc in cells:
+                assert 0 <= dr < 4 and 0 <= dc < 4, (kind, cells)
+
+
+def test_kick_tables_offer_five_candidates_for_non_o_pieces():
+    for kind in ("T", "S", "Z", "J", "L", "I"):
+        for from_rot in range(4):
+            for direction in (1, -1):
+                to_rot = (from_rot + direction) % 4
+                assert len(kick_table(kind, from_rot, to_rot)) == 5
+
+
+def test_kick_offsets_negate_for_reverse_transitions():
+    """SRS property: the kicks for B->A are the negated kicks of A->B."""
+    for kind in ("T", "I"):
+        for from_rot in range(4):
+            for direction in (1, -1):
+                to_rot = (from_rot + direction) % 4
+                forward = kick_table(kind, from_rot, to_rot)
+                reverse = kick_table(kind, to_rot, from_rot)
+                assert reverse == [(-dc, -dr) for dc, dr in forward], (
+                    kind, from_rot, to_rot,
+                )
+
+
+def test_moved_composes_translations():
+    t = Tetromino(kind="S", row=3, col=2)
+    assert t.moved(1, 2).moved(2, -1) == t.moved(3, 1)
+
+
+def test_tetromino_is_immutable():
+    t = Tetromino(kind="J", row=0, col=0)
+    with pytest.raises(dataclasses.FrozenInstanceError):
+        t.row = 5

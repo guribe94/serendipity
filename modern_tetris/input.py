@@ -497,6 +497,10 @@ class InputController:
             self._dispatch[action]()
             state.next_repeat_ms += period
             fired += 1
+        if state.next_repeat_ms <= now_ms:
+            # Cap hit with backlog remaining: drop it, otherwise a long stall
+            # keeps bursting capped repeats on every following tick.
+            state.next_repeat_ms = now_ms + period
 
     def _tick_soft_drop(self, now_ms: int) -> None:
         state = self._soft
@@ -511,6 +515,9 @@ class InputController:
             self._dispatch[Action.SOFT_DROP]()
             state.next_repeat_ms += period
             fired += 1
+        if state.next_repeat_ms <= now_ms:
+            # Same backlog-drop rule as horizontal movement (see _tick_movement).
+            state.next_repeat_ms = now_ms + period
 
 
 __all__ = [
