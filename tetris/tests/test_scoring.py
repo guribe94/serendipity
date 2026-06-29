@@ -91,3 +91,94 @@ def test_level_only_advances_never_drops():
     s = Scoring(starting_level=5)
     s.add_line_clear(1)
     assert s.level == 5  # one line at level 5 should not regress to level 1
+
+
+def test_initial_stats_all_zero():
+    s = Scoring()
+    assert s.stats == {
+        "singles": 0,
+        "doubles": 0,
+        "triples": 0,
+        "tetrises": 0,
+        "tspins": 0,
+        "tspin_minis": 0,
+        "max_combo": 0,
+    }
+
+
+def test_clear_type_counters_track_line_counts():
+    s = Scoring()
+    s.add_line_clear(1)
+    s.add_line_clear(2)
+    s.add_line_clear(3)
+    s.add_line_clear(4)
+    assert s.stats["singles"] == 1
+    assert s.stats["doubles"] == 1
+    assert s.stats["triples"] == 1
+    assert s.stats["tetrises"] == 1
+
+
+def test_clear_type_counters_accumulate_per_line_count():
+    s = Scoring()
+    s.add_line_clear(1)
+    s.add_line_clear(1)
+    s.add_line_clear(2)
+    assert s.stats["singles"] == 2
+    assert s.stats["doubles"] == 1
+    assert s.stats["triples"] == 0
+    assert s.stats["tetrises"] == 0
+
+
+def test_tspin_counters_track_full_and_mini():
+    s = Scoring()
+    s.add_line_clear(2, tspin="full")
+    s.add_line_clear(1, tspin="mini")
+    s.add_line_clear(0, tspin="full")  # full t-spin with no lines is still counted
+    assert s.stats["tspins"] == 2
+    assert s.stats["tspin_minis"] == 1
+
+
+def test_tspin_clear_counts_toward_both_line_type_and_tspin():
+    s = Scoring()
+    s.add_line_clear(2, tspin="full")
+    assert s.stats["doubles"] == 1
+    assert s.stats["tspins"] == 1
+
+
+def test_zero_line_lock_increments_no_clear_type_counter():
+    s = Scoring()
+    s.add_line_clear(0)
+    assert s.stats["singles"] == 0
+    assert s.stats["doubles"] == 0
+    assert s.stats["triples"] == 0
+    assert s.stats["tetrises"] == 0
+    assert s.stats["tspins"] == 0
+    assert s.stats["tspin_minis"] == 0
+
+
+def test_max_combo_tracks_peak_and_survives_reset():
+    s = Scoring()
+    s.add_line_clear(1)  # combo 0
+    s.add_line_clear(1)  # combo 1
+    s.add_line_clear(1)  # combo 2 -> peak
+    s.add_line_clear(0)  # combo resets to -1
+    s.add_line_clear(1)  # combo 0 again
+    assert s.stats["max_combo"] == 2
+
+
+def test_stats_returns_fresh_dict_snapshot():
+    s = Scoring()
+    s.add_line_clear(4)
+    snapshot = s.stats
+    assert snapshot == {
+        "singles": 0,
+        "doubles": 0,
+        "triples": 0,
+        "tetrises": 1,
+        "tspins": 0,
+        "tspin_minis": 0,
+        "max_combo": 0,
+    }
+    # Mutating the returned dict must not affect internal state.
+    snapshot["tetrises"] = 999
+    assert s.stats["tetrises"] == 1

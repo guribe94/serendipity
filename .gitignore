@@ -1,3 +1,18 @@
+# Python
 *.pyc
+__pycache__/
+*.egg-info/
+.venv/
+venv/
+
+# Django
 db.sqlite3
+
+# Editors / IDEs
 */.ropenprojects/*
+.ropeproject/
+.idea/
+.vscode/
+
+# macOS
+.DS_Store

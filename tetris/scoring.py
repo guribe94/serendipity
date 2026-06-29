@@ -23,6 +23,13 @@ class ScoreState:
     level: int = 1
     combo: int = -1
     last_was_difficult: bool = False
+    singles: int = 0
+    doubles: int = 0
+    triples: int = 0
+    tetrises: int = 0
+    tspins: int = 0
+    tspin_minis: int = 0
+    max_combo: int = 0
 
 
 class Scoring:
@@ -40,6 +47,18 @@ class Scoring:
     @property
     def level(self) -> int:
         return self.state.level
+
+    @property
+    def stats(self) -> dict:
+        return {
+            "singles": self.state.singles,
+            "doubles": self.state.doubles,
+            "triples": self.state.triples,
+            "tetrises": self.state.tetrises,
+            "tspins": self.state.tspins,
+            "tspin_minis": self.state.tspin_minis,
+            "max_combo": self.state.max_combo,
+        }
 
     def add_soft_drop(self, cells: int) -> int:
         delta = SOFT_DROP_POINTS * max(0, cells)
@@ -81,4 +100,19 @@ class Scoring:
         self.state.lines += lines_cleared
         new_level = max(self.state.level, self.state.lines // LINES_PER_LEVEL + 1)
         self.state.level = new_level
+
+        # Additive clear-type bookkeeping (does not affect score/level/lines).
+        if lines_cleared == 1:
+            self.state.singles += 1
+        elif lines_cleared == 2:
+            self.state.doubles += 1
+        elif lines_cleared == 3:
+            self.state.triples += 1
+        elif lines_cleared == 4:
+            self.state.tetrises += 1
+        if tspin == "full":
+            self.state.tspins += 1
+        elif tspin == "mini":
+            self.state.tspin_minis += 1
+        self.state.max_combo = max(self.state.max_combo, self.state.combo)
         return delta
